@@ -90,7 +90,7 @@ init_sudoku(struct sudoku_elm* result)
             if(cur_y == y)
                 result[i].unit[1][result[i].top_y++] = j;
             if(cur_x/3 == x/3 &&
-                    cur_y/3 == y/3)
+               cur_y/3 == y/3)
                 result[i].unit[2][result[i].top_b++] = j;
         }
         int k = 0;
@@ -352,8 +352,9 @@ int display(struct sudoku_elm* result)
     }
 }
 
-int main()
+int sudoku(char* buf)
 {
+    int ret = 0;
     struct sudoku_elm* result = malloc(ELEMENT_PER_LINE*ELEMENT_PER_LINE*sizeof(struct sudoku_elm));
     if(result == NULL)
     {
@@ -361,8 +362,8 @@ int main()
         goto out;
     }
     init_sudoku(result);
-    char buf[128]=".....6....59.....82....8....45........3........6..3.54...325..6..................";
-    int ret= parse_input(result,buf);
+
+    ret= parse_input(result,buf);
     if(ret)
     {
         fprintf(stderr,"parse failed\n");
@@ -390,7 +391,19 @@ int main()
 out:
     if(result)
         free(result);
-    return 0;
+    return ret;
 
+}
+int main()
+{
+    
+    char buf[128]=".....6....59.....82....8....45........3........6..3.54...325..6..................";
+    int ret = sudoku(buf);
+    if(ret != 0)
+    {
+       fprintf(stderr,"failed\n");
+       return ret;
+    }
+    return 0;
 }
 
