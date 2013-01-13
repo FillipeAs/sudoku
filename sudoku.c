@@ -18,6 +18,8 @@ typedef struct  sudoku_elm{
     unsigned short possibility[9];
 }sudoku_elm;
 
+static int malloc_count = 0;
+static int cpy_cnt = 0;
 inline init_possibility(struct sudoku_elm* result,int index)
 {
     int k = 0;
@@ -280,13 +282,13 @@ int search(struct sudoku_elm* result)
     int success = 0;
     for(i = 0 ; i<min_count;i++)
     {
-
         result_cpy = malloc(sizeof(struct sudoku_elm)*ELEMENT_NUM);
         if(result_cpy == NULL)
         {
             fprintf(stderr,"can not malloc for try\n");
             return -1;
         }
+        malloc_count++;
         memcpy(result_cpy,result,sizeof(sudoku_elm)*ELEMENT_NUM);
         int value = get_nth_possibility(result_cpy,idx,i);
         int ret = assign(result_cpy,idx,value);
@@ -314,6 +316,7 @@ int search(struct sudoku_elm* result)
     {
         memcpy(result,result_cpy,sizeof(sudoku_elm)*ELEMENT_NUM);
         free(result_cpy);
+        cpy_cnt++;
         return 0;
     }
     else
@@ -350,6 +353,7 @@ int display(struct sudoku_elm* result)
         }
         fprintf(stdout,"\n");
     }
+    fprintf(stdout,"malloc time (%d)\t cpy_cnt(%d)\n",malloc_count,cpy_cnt);
 }
 
 int sudoku(char* buf)
